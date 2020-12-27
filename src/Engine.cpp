@@ -1,5 +1,6 @@
 #include "../inc/Engine.h"
 
+/*PUBLIC*/ 
 // Constructor
 Engine::Engine() {
     sAppName = "GALG";
@@ -15,7 +16,6 @@ bool Engine::OnUserCreate() {
     ImGui::GetStyle().PopupRounding = 0.0f;
     ImGui::GetStyle().ScrollbarRounding = 0.0f;
     m_edge_buffer = std::vector<boost::uuids::uuid>();
-    m_edges_pair = std::vector<std::pair<boost::uuids::uuid, boost::uuids::uuid>>();
 
     set_state("add_edge", false);
     set_state("normal", true);
@@ -49,76 +49,37 @@ bool Engine::OnUserDestroy() {
     return true;
 }
 
-// Getter methods
-Widget* Engine::get_widget(const boost::uuids::uuid& id) { return m_widgets.at(id); }
-bool Engine::get_state(const std::string& state_name) const {
-    return m_state.at(state_name);
-}
-std::vector<boost::uuids::uuid> Engine::get_edge_buffer() const {
-    return m_edge_buffer;
-}
-std::string Engine::get_type(const boost::uuids::uuid& id) const {
-    return m_types.at(id);
-}
-bool Engine::has_edge(const boost::uuids::uuid& vertex_id1, const boost::uuids::uuid& vertex_id2) const {
-    return std::find(m_edges_pair.begin(), m_edges_pair.end(), std::make_pair(vertex_id1, vertex_id2)) != m_edges_pair.end();
-}
-
-// Setter methods
-void Engine::set_state(const std::string& state_name, bool state) { m_state[state_name] = state; }
-void Engine::add_edge(boost::uuids::uuid vertex_id1, boost::uuids::uuid vertex_id2) {
-    if(get_type(vertex_id1) == "Vertex" && 
-        get_type(vertex_id2) == "Vertex" &&
-        vertex_id1 != vertex_id2 &&
-        !has_edge(vertex_id1, vertex_id2)
-        ) {
-        add_widget(new Edge(get_widget(vertex_id1), get_widget(vertex_id2)), "Edge");
-        add_edge_pair(vertex_id1, vertex_id2);
-    }
-}
-void Engine::add_widget(Widget* widget, const std::string& type) {
-    boost::uuids::uuid id = boost::uuids::random_generator()();
-    widget->set_id(id);
-    m_widgets[id] = widget;
-    if(type == "Edge") {
-        push_back_order_id(id);
-    }
-    else{
-        push_front_order_id(id);
-    }
-    add_type(id, type);
-}
-void Engine::add_widget_to_edge_buffer(boost::uuids::uuid id) {
-    m_edge_buffer.push_back(id);
-}
-void Engine::clear_edge_buffer() {
-    m_edge_buffer.clear();
-}
-void Engine::add_vertex() {
-    add_widget(new Vertex(m_default_vertex), "Vertex");
-}
-void Engine::add_type(const boost::uuids::uuid& id, const std::string& type) {
-    m_types[id] = type;
-}
-void Engine::add_edge_pair(boost::uuids::uuid vertex_id1, boost::uuids::uuid vertex_id2) {
-    m_edges_pair.push_back({vertex_id1, vertex_id2});
-}
-
-// Debug
-void Engine::draw_debug() {
-    int nb_edge = m_edges_pair.size();
-    int nb_vertex = m_widgets.size() - nb_edge;
-    DrawString(0, 10, "Number vertices: " + std::to_string(nb_vertex), COLOR[0]);
-    DrawString(0, 18, "Number edges: " + std::to_string(nb_edge), COLOR[0]);
-    if(get_state("add_edge")) {
-        DrawString(0, 26, "Adding edge...", COLOR[0]);
-        for(size_t i = 0; i < m_edge_buffer.size(); i++) {
-            DrawString(0, 34 + i * 8, std::to_string(i) + " vertex: " + boost::uuids::to_string(m_edge_buffer[i]), COLOR[0]);
+// Getter
+Widget Engine::get_widget(const boost::uuids::uuid& id) const { return *m_widgets.at(id); }
+Vertex Engine::get_vertex(const boost::uuids::uuid& id) const { return *m_vertices.at(id); }
+Edge Engine::get_edge(const boost::uuids::uuid& id) const { return *m_edges.at(id); }
+int Engine::get_nb_vertex() const { return m_vertices.size(); }
+int Engine::get_nb_edge() const { return m_edges.size(); }
+Vertex Engine::get_default_vertex() const { return m_default_vertex; }
+bool Engine::get_state(const std::string& state_name) const { return m_state.at(state_name); }
+std::vector<boost::uuids::uuid> Engine::get_edge_buffer() const { return m_edge_buffer; }
+bool Engine::has_edge(const boost::uuids::uuid& vertex_id1, const boost::uuids::uuid& vertex_id2) {
+    for(const auto& el : get_edges()) {
+        if((el.second->get_src_id() == vertex_id1 && el.second->get_dst_id() == vertex_id2) ||
+           (el.second->get_src_id() == vertex_id2 && el.second->get_dst_id() == vertex_id1)) {
+            return true;
         }
     }
+    return false;
 }
 
-// ImGui methods
+// Setter
+void Engine::set_default_vertex(Vertex default_vertex) { m_default_vertex = default_vertex; }
+
+// Debug
+void Engine::draw_debug() { 
+    DrawString(0, 10, "Number edges:" + std::to_string(get_nb_edge()), COLOR[0]);
+    DrawString(0, 20, "Number vertices:" + std::to_string(get_nb_vertex()), COLOR[0]);
+}
+
+
+/*PRIVATE*/
+// ImGui 
 void Engine::draw_ui() {
     // Main ui
     if(ImGui::BeginMainMenuBar()) {
@@ -132,7 +93,7 @@ void Engine::draw_ui() {
 
     // Widget ui
     for(const auto& id : get_order()) {
-        get_widget(id)->update_ui(*this);
+        get_widget_ptr(id)->update_ui(*this);
     }
 }
 void Engine::draw_action_window() {
@@ -144,7 +105,7 @@ void Engine::draw_action_window() {
     ImGui::SetNextWindowPos({pos_x, pos_y});
     ImGui::Begin("Action");
     if(ImGui::Button("Add Vertex")) {
-        add_vertex();
+        add_vertex(get_default_vertex());
     }
     if(ImGui::Button("Add Edge")) {
         //set_state("normal", false);
@@ -153,22 +114,68 @@ void Engine::draw_action_window() {
     ImGui::End();
 }
 
-// Update methods
+// Getter
+Vertex* Engine::get_vertex_ptr(const boost::uuids::uuid& id) { return m_vertices.at(id); }
+Edge* Engine::get_edge_ptr(const boost::uuids::uuid& id) { return m_edges.at(id); }
+Widget* Engine::get_widget_ptr(const boost::uuids::uuid& id) { return m_widgets.at(id); }
+std::map<boost::uuids::uuid, Vertex*>& Engine::get_vertices() { return m_vertices; }
+std::map<boost::uuids::uuid, Edge*>& Engine::get_edges() { return m_edges; }
+std::map<boost::uuids::uuid, Widget*>& Engine::get_widgets() { return m_widgets; }
+
+// Setter
+// // Add
+void Engine::add_edge(boost::uuids::uuid vertex_id1, boost::uuids::uuid vertex_id2) {
+    if(vertex_id1 != vertex_id2 && !has_edge(vertex_id1, vertex_id2)) {
+        Edge* new_edge = new Edge(get_vertex_ptr(vertex_id1), get_vertex_ptr(vertex_id2));
+        boost::uuids::uuid id = boost::uuids::random_generator()();
+        new_edge->set_id(id);
+        new_edge->set_is_directed(true);
+        m_edges[id] = new_edge;
+        add_widget(id, new_edge);
+        push_back_order_id(id);
+    }
+}
+void Engine::add_vertex(Vertex vertex) {
+    boost::uuids::uuid id = boost::uuids::random_generator()();
+    Vertex* new_vertex = new Vertex(vertex);
+    new_vertex->set_id(id);
+    m_vertices[id] = new_vertex;
+    add_widget(id, new_vertex);
+    push_front_order_id(id);
+}
+void Engine::add_widget(const boost::uuids::uuid& id, Widget* widget) {
+    m_widgets[id] = widget;
+}
+void Engine::add_widget_to_edge_buffer(boost::uuids::uuid id) {
+    m_edge_buffer.push_back(id);
+}
+
+// // Modify
+void Engine::set_state(const std::string& state_name, bool state) { m_state[state_name] = state; }
+
+// // Delete
+void Engine::clear_edge_buffer() {
+    m_edge_buffer.clear();
+}
+
+
+// Update
 void Engine::update_normal() {
     for (std::vector<boost::uuids::uuid>::reverse_iterator id = get_order().rbegin(); id != get_order().rend(); ++id) { 
-        get_widget(*id)->update(*this);
+        get_widget_ptr(*id)->update(*this);
     } 
     for(const auto& id : get_order()) {
-        get_widget(id)->draw(*this);
+        get_widget_ptr(id)->draw(*this);
     }
 }
 void Engine::update_add_edge() {
-    for (std::vector<boost::uuids::uuid>::reverse_iterator id = get_order().rbegin(); id != get_order().rend(); ++id) { 
-        if(get_widget(*id)->is_clicked(*this)) {
-            add_widget_to_edge_buffer(get_widget(*id)->get_id());
+    // TODO: Take into account the draw order
+    for(const auto& el : get_vertices()) {
+        if(el.second->is_clicked(*this)) {
+            add_widget_to_edge_buffer(el.second->get_id());
             break;
         }
-    } 
+    }
     if(get_edge_buffer().size() == 2) {
         add_edge(get_edge_buffer()[0], get_edge_buffer()[1]);
         clear_edge_buffer();

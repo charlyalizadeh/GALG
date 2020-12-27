@@ -1,7 +1,15 @@
 #include "../inc/Widget.h"
 
 Widget::Widget(const std::pair<int, int>& coord, const std::pair<int, int>& dim, boost::uuids::uuid id):
-    m_coord(coord), m_dim(dim), m_coord_drag(coord), m_is_drag(false), m_mouse_pos({0, 0}), m_id(id) {
+    m_coord(coord),
+    m_dim(dim),
+    m_coord_drag(coord),
+    m_is_drag(false),
+    m_mouse_pos({0, 0}),
+    m_id(id),
+    m_colors(std::map<std::string, olc::Pixel>()),
+    m_gui_state(std::map<std::string, bool>())
+{
         set_gui_state("modifyDepth", false);
         add_color("bg", COLOR[4]);
         add_color("bg_over", COLOR[3]);
@@ -13,7 +21,15 @@ Widget::Widget(const std::pair<int, int>& coord, const std::pair<int, int>& dim,
         add_color("border_over", COLOR[9]);
         add_color("border_drag", COLOR[8]);
 }
-Widget::Widget() {} 
+Widget::Widget(): m_coord({0, 0}),
+                  m_dim({0, 0}),
+                  m_coord_drag({0, 0}),
+                  m_is_drag(false),
+                  m_mouse_pos({0, 0}),
+                  m_id(boost::uuids::random_generator()()),
+                  m_colors(std::map<std::string, olc::Pixel>()),
+                  m_gui_state(std::map<std::string, bool>())
+{ }
 Widget::~Widget() {}
 
 int Widget::get_x() const { return m_coord.first; }
@@ -27,7 +43,7 @@ bool Widget::get_is_drag() const { return m_is_drag; }
 std::pair<int, int> Widget::get_coord_drag() const { return m_coord_drag; }
 bool Widget::get_gui_state(const std::string& gui) const { return m_gui_state.at(gui); }
 std::pair<float, float> Widget::get_mouse_pos() const { return m_mouse_pos; }
-boost::uuids::uuid Widget::get_id() const { return m_id; }
+const boost::uuids::uuid& Widget::get_id() const { return m_id; }
 std::pair<int, int> Widget::get_center() const { 
     return {get_x() + get_width() / 2, get_y() + get_height() / 2}; 
 }

@@ -45,7 +45,7 @@ class Widget{
         std::pair<int, int> get_coord_drag() const;
         bool get_gui_state(const std::string& gui) const;
         std::pair<float, float> get_mouse_pos() const;
-        boost::uuids::uuid get_id() const;
+        const boost::uuids::uuid& get_id() const;
         std::pair<int, int> get_center() const;
         int get_center_x() const;
         int get_center_y() const;
@@ -99,12 +99,12 @@ class Widget{
 
     private:
         std::pair<int, int> m_coord, m_dim;
-        std::map<std::string, olc::Pixel> m_colors;
-        bool m_is_drag;
         std::pair<int, int> m_coord_drag;
-        std::map<std::string, bool> m_gui_state;
+        bool m_is_drag;
         std::pair<float, float> m_mouse_pos;
         boost::uuids::uuid m_id;
+        std::map<std::string, olc::Pixel> m_colors;
+        std::map<std::string, bool> m_gui_state;
 
 };
 #endif // GALG_WIDGET_H_

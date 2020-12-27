@@ -7,7 +7,7 @@
 #include "Widget.h"
 #include <string>
 
-enum class Shape {
+enum class VertexShape {
     CIRCLE,
     RECTANGLE,
     DIAMOND
@@ -15,17 +15,18 @@ enum class Shape {
 
 class Vertex : public Widget {
     public:
-        Vertex(std::pair<int, int> coord, int size, std::string m_label = "", Shape shape = Shape::CIRCLE, boost::uuids::uuid id = boost::uuids::uuid());
-        Vertex(std::pair<int, int> coord, std::pair<int, int> dim, std::string m_label = "", Shape shape = Shape::RECTANGLE, boost::uuids::uuid id = boost::uuids::uuid());
+        // Constructors
+        Vertex(std::pair<int, int> coord, int size, std::string m_label = "", VertexShape shape = VertexShape::CIRCLE, boost::uuids::uuid id = boost::uuids::uuid());
+        Vertex(std::pair<int, int> coord, std::pair<int, int> dim, std::string m_label = "", VertexShape shape = VertexShape::RECTANGLE, boost::uuids::uuid id = boost::uuids::uuid());
         Vertex(const Vertex& vertex);
         Vertex();
 
         // Getter
-        Shape get_shape() const;
+        VertexShape get_shape() const;
         std::string get_label() const;
 
         // Setter
-        void set_shape(Shape shape);
+        void set_shape(VertexShape shape);
         void set_label(std::string label);
 
         // Draw/Update functions
@@ -43,7 +44,7 @@ class Vertex : public Widget {
 
     private:
         std::string m_label;
-        Shape m_shape;
+        VertexShape m_shape;
 };
 
 #endif // GALG_VERTEX_H_

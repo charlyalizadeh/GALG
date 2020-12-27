@@ -18,3 +18,7 @@ GALG : $(OBJ) $(IMGUIOBJ)
 
 clean :
 	rm ./obj/*
+
+build:
+	mkdir obj
+	mkdir bin
