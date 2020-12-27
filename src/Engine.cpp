@@ -130,6 +130,7 @@ void Engine::add_edge(boost::uuids::uuid vertex_id1, boost::uuids::uuid vertex_i
         boost::uuids::uuid id = boost::uuids::random_generator()();
         new_edge->set_id(id);
         new_edge->set_is_directed(true);
+        //new_edge->set_debug(true);
         m_edges[id] = new_edge;
         add_widget(id, new_edge);
         push_back_order_id(id);

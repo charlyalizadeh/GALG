@@ -11,7 +11,7 @@
 
 int main() {
 	Engine demo;
-	if (demo.Construct(640, 360, 2, 2))
+	if (demo.Construct(2*640, 2*360, 1, 1))
 		demo.Start();
 	return 0;
 }
