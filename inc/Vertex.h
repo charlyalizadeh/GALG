@@ -1,10 +1,10 @@
 #ifndef  GALG_VERTEX_H_
 #define GALG_VERTEX_H_
 
-#include "../lib/imgui_impl_pge.h"
-#include "../lib/imgui/imgui_impl_opengl2.h"
 #include "ModifiedPGE.h"
 #include "Widget.h"
+#include "../lib/imgui_impl_pge.h"
+#include "../lib/imgui/imgui_impl_opengl2.h"
 #include <string>
 
 enum class VertexShape {
@@ -16,18 +16,26 @@ enum class VertexShape {
 class Vertex : public Widget {
     public:
         // Constructors
-        Vertex(std::pair<int, int> coord, int size, std::string m_label = "", VertexShape shape = VertexShape::CIRCLE, boost::uuids::uuid id = boost::uuids::uuid());
-        Vertex(std::pair<int, int> coord, std::pair<int, int> dim, std::string m_label = "", VertexShape shape = VertexShape::RECTANGLE, boost::uuids::uuid id = boost::uuids::uuid());
+        Vertex(const std::pair<int,int>& coord,
+               const int& size,
+               const std::string& m_label = "",
+               const VertexShape& shape = VertexShape::CIRCLE,
+               const boost::uuids::uuid& id = boost::uuids::uuid());
+        Vertex(const std::pair<int,int>& coord,
+               const std::pair<int,int>& dim,
+               const std::string& m_label = "",
+               const VertexShape& shape = VertexShape::RECTANGLE,
+               const boost::uuids::uuid& id = boost::uuids::uuid());
         Vertex(const Vertex& vertex);
         Vertex();
 
         // Getter
-        VertexShape get_shape() const;
-        std::string get_label() const;
+        const VertexShape& get_shape() const;
+        const std::string& get_label() const;
 
         // Setter
-        void set_shape(VertexShape shape);
-        void set_label(std::string label);
+        void set_shape(const VertexShape& shape);
+        void set_label(const std::string& label);
 
         // Draw/Update functions
         void draw(ModifiedPGE& engine) const;

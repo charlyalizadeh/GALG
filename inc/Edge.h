@@ -27,12 +27,9 @@ class Edge : public Widget {
         // Constructor
         Edge(Vertex* src,
              Vertex* dst,
-             boost::uuids::uuid id = boost::uuids::uuid(),
-             bool is_directed=false,
-             ArrowShape arrow_shape=ArrowShape::TRIANGLE,
-             std::pair<int, int> arrow_dim = {10, 6},
-             int arrow_offset = 0
-             );
+             const boost::uuids::uuid& id = boost::uuids::uuid(),
+             const bool& is_directed=false,
+             const ArrowShape& arrow_shape=ArrowShape::TRIANGLE);
         Edge(const Edge& edge);
         Edge();
 
@@ -41,21 +38,21 @@ class Edge : public Widget {
         const Vertex& get_dst() const;
         const boost::uuids::uuid& get_src_id() const;
         const boost::uuids::uuid& get_dst_id() const;
-        bool get_is_directed() const;
-        ArrowShape get_arrow_shape() const;
-        std::pair<int, int> get_arrow_dim() const;
-        int get_arrow_offset() const;
-        bool get_debug() const;
+        const bool& get_is_directed() const;
+        const ArrowShape& get_arrow_shape() const;
+        const std::pair<int,int>& get_arrow_dim() const;
+        const int& get_arrow_offset() const;
+        const bool& get_debug() const;
 
         // Setter
         void set_src(Vertex* src);
         void set_dst(Vertex* dst);
-        void set_is_directed(bool is_directed);
+        void set_is_directed(const bool& is_directed);
         void switch_direction();
-        void set_arrow_shape(ArrowShape arrow_shape);
-        void set_arrow_dim(std::pair<int, int> arrow_dim);
-        void set_arrow_offset(int arrow_offset);
-        void set_debug(bool debug);
+        void set_arrow_shape(const ArrowShape& arrow_shape);
+        void set_arrow_dim(const std::pair<int,int>& arrow_dim);
+        void set_arrow_offset(const int& arrow_offset);
+        void set_debug(const bool& debug);
 
         // Update/Draw
         void draw(ModifiedPGE& engine) const;
@@ -77,14 +74,14 @@ class Edge : public Widget {
         void draw_debug_arrow_triangle(ModifiedPGE& engine) const;
 
     private:
-        std::pair<int, int> get_intersection_coord() const;
+        std::pair<int,int> get_intersection_coord() const;
         std::unique_ptr<Vertex> m_src;
         std::unique_ptr<Vertex> m_dst;
-        std::pair<int, int> m_old_src_coord;
-        std::pair<int, int> m_old_dst_coord;
+        std::pair<int,int> m_old_src_coord;
+        std::pair<int,int> m_old_dst_coord;
         bool m_is_directed;
         ArrowShape m_arrow_shape;
-        std::pair<int, int> m_arrow_dim;
+        std::pair<int,int> m_arrow_dim;
         int m_arrow_offset;
         bool m_debug;
 };

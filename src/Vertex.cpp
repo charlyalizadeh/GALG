@@ -1,10 +1,10 @@
 #include "../inc/Vertex.h"
 
-Vertex::Vertex(std::pair<int, int> coord,
-                int size,
-                std::string label,
-                VertexShape shape,
-                boost::uuids::uuid id): 
+Vertex::Vertex(const std::pair<int,int>& coord,
+               const int& size,
+               const std::string& label,
+               const VertexShape& shape,
+               const boost::uuids::uuid& id): 
                     Widget(coord, {size, size}, id),
                     m_label(label),
                     m_shape(shape) 
@@ -13,11 +13,11 @@ Vertex::Vertex(std::pair<int, int> coord,
     set_gui_state("modifyLabel", false);
     set_gui_state("modifyVertexShape", false);
 }
-Vertex::Vertex(std::pair<int, int> coord,
-                std::pair<int, int> dim,
-                std::string label,
-                VertexShape shape,
-                boost::uuids::uuid id):
+Vertex::Vertex(const std::pair<int,int>& coord,
+               const std::pair<int,int>& dim,
+               const std::string& label,
+               const VertexShape& shape,
+               const boost::uuids::uuid& id):
                     Widget(coord, dim, id),
                     m_label(label),
                     m_shape(shape) 
@@ -45,11 +45,19 @@ Vertex::Vertex():
     set_gui_state("modifyVertexShape", false);
 }
 
-VertexShape Vertex::get_shape() const { return m_shape; }
-std::string Vertex::get_label() const { return m_label; }
+const VertexShape& Vertex::get_shape() const {
+    return m_shape; 
+}
+const std::string& Vertex::get_label() const {
+    return m_label; 
+}
 
-void Vertex::set_shape(VertexShape shape) { m_shape = shape; }
-void Vertex::set_label(std::string label) { m_label = label; }
+void Vertex::set_shape(const VertexShape& shape) {
+    m_shape = shape; 
+}
+void Vertex::set_label(const std::string& label) {
+    m_label = label; 
+}
 
 bool Vertex::is_mouse_over(ModifiedPGE& engine) const {
     int mouse_x = engine.GetMouseX();
@@ -58,7 +66,9 @@ bool Vertex::is_mouse_over(ModifiedPGE& engine) const {
     int origin_y = get_y() + get_height() / 2;
     switch(m_shape){
         case VertexShape::CIRCLE:
-            return (origin_x - mouse_x) * (origin_x - mouse_x) + (origin_y - mouse_y) * (origin_y - mouse_y)   <= (get_width() / 2) * (get_width() / 2) ;
+            return (origin_x - mouse_x) * (origin_x - mouse_x) +
+                   (origin_y - mouse_y) * (origin_y - mouse_y) 
+                   <= (get_width() / 2) * (get_width() / 2) ;
             break;
         case VertexShape::RECTANGLE:
             return Widget::is_mouse_over(engine);
@@ -71,20 +81,41 @@ bool Vertex::is_mouse_over(ModifiedPGE& engine) const {
 void Vertex::draw(ModifiedPGE& engine) const {
     int label_x = get_x() + get_width() / 2 - (get_label().size() / 2) * 8;
     int label_y = get_y() + get_width() / 2 - 4;
-    std::string state = get_is_drag() ? "_drag" : is_mouse_over(engine) ? "_over" : "";
+    std::string state = get_is_drag() ?  "_drag" :
+                                         is_mouse_over(engine) ?  "_over" : "";
     olc::Pixel bg = get_color("bg" + state);
     olc::Pixel fg = get_color("fg" + state);
     olc::Pixel border = get_color("border" + state);
     switch(m_shape) {
         case VertexShape::CIRCLE:
-            engine.FillCircle(get_x() + get_width() / 2, get_y() + get_width() / 2, get_width() / 2, bg);
-            engine.DrawCircle(get_x() + get_width() / 2, get_y() + get_width() / 2, get_width() / 2, border);
-            engine.DrawString(label_x, label_y, get_label(), fg);
+            engine.FillCircle(get_x() + get_width() / 2,
+                              get_y() + get_width() / 2,
+                              get_width() / 2,
+                              bg);
+            engine.DrawCircle(get_x() + get_width() / 2,
+                              get_y() + get_width() / 2,
+                              get_width() / 2,
+                              border);
+            engine.DrawString(label_x,
+                              label_y,
+                              get_label(),
+                              fg);
             break;
         case VertexShape::RECTANGLE:
-            engine.FillRect(get_x(), get_y(), get_width(), get_height(), bg);
-            engine.DrawRect(get_x(), get_y(), get_width(), get_height(), border);
-            engine.DrawString(label_x, label_y, get_label(), fg);
+            engine.FillRect(get_x(),
+                            get_y(),
+                            get_width(),
+                            get_height(),
+                            bg);
+            engine.DrawRect(get_x(),
+                            get_y(),
+                            get_width(),
+                            get_height(),
+                            border);
+            engine.DrawString(label_x,
+                              label_y,
+                              get_label(),
+                              fg);
             break;
         case VertexShape::DIAMOND:
             // TODO: implement diamond shape.
@@ -105,7 +136,8 @@ void Vertex::update(ModifiedPGE& engine) {
     if(is_clicked(engine, 1) && !engine.get_flag("has_active_popup_menu")) {
         engine.set_flag("has_active_popup_menu", true);
         set_gui_state("mainMenu", true);
-        set_mouse_pos({engine.GetMouseX() * engine.GetPixelSize().x, engine.GetMouseY() * engine.GetPixelSize().y});
+        set_mouse_pos({engine.GetMouseX() * engine.GetPixelSize().x,
+                       engine.GetMouseY() * engine.GetPixelSize().y});
     }
 }
 void Vertex::update_ui(ModifiedPGE& engine) {
@@ -124,7 +156,8 @@ void Vertex::update_ui(ModifiedPGE& engine) {
 }
 
 void Vertex::main_menu(ModifiedPGE& engine) {
-    ImGui::SetNextWindowPos({get_mouse_pos().first, get_mouse_pos().second});
+    ImGui::SetNextWindowPos({get_mouse_pos().first,
+                             get_mouse_pos().second});
     ImGui::Begin("Options");
     if(ImGui::Button("Modify Label")) {
         set_gui_state("mainMenu", false);
@@ -145,11 +178,14 @@ void Vertex::main_menu(ModifiedPGE& engine) {
     ImGui::End();
 }
 void Vertex::modify_label(ModifiedPGE& engine) {
-    ImGui::SetNextWindowPos({get_mouse_pos().first, get_mouse_pos().second});
+    ImGui::SetNextWindowPos({get_mouse_pos().first,
+                             get_mouse_pos().second});
     ImGui::Begin("Label");
     char buf[30]; 
     strcpy(buf, get_label().c_str());
-    if(ImGui::InputText("UTF-8 input", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_EnterReturnsTrue) || (!ImGui::IsWindowFocused())) {
+    if(ImGui::InputText("UTF-8 input", buf, IM_ARRAYSIZE(buf),
+                        ImGuiInputTextFlags_EnterReturnsTrue) 
+            || (!ImGui::IsWindowFocused())) {
         set_gui_state("modifyLabel", false);
         engine.set_flag("has_active_popup_menu", false);
     } else {
@@ -162,7 +198,11 @@ void Vertex::modify_shape(ModifiedPGE& engine) {
     ImGui::Begin("VertexShape");
     const char* items[] = { "CIRCLE", "SQUARE" };
     int item_current = static_cast<int>(get_shape());
-    if(ImGui::ListBox("listbox\n(single select)", &item_current, items, IM_ARRAYSIZE(items), 4)) {
+    if(ImGui::ListBox("listbox\n(single select)",
+       &item_current,
+       items,
+       IM_ARRAYSIZE(items),
+       4)) {
         set_gui_state("modifyVertexShape", false);
         engine.set_flag("has_active_popup_menu", false);
     }
