@@ -1,5 +1,7 @@
 #include "../inc/Vertex.h"
 
+/*private*/
+// Constructor
 Vertex::Vertex(const std::pair<int,int>& coord,
                const int& size,
                const std::string& label,
@@ -45,6 +47,7 @@ Vertex::Vertex():
     set_gui_state("modifyVertexShape", false);
 }
 
+// Getter
 const VertexShape& Vertex::get_shape() const {
     return m_shape; 
 }
@@ -52,6 +55,7 @@ const std::string& Vertex::get_label() const {
     return m_label; 
 }
 
+// Setter
 void Vertex::set_shape(const VertexShape& shape) {
     m_shape = shape; 
 }
@@ -59,25 +63,7 @@ void Vertex::set_label(const std::string& label) {
     m_label = label; 
 }
 
-bool Vertex::is_mouse_over(ModifiedPGE& engine) const {
-    int mouse_x = engine.GetMouseX();
-    int mouse_y = engine.GetMouseY();
-    int origin_x = get_x() + get_width() / 2;
-    int origin_y = get_y() + get_height() / 2;
-    switch(m_shape){
-        case VertexShape::CIRCLE:
-            return (origin_x - mouse_x) * (origin_x - mouse_x) +
-                   (origin_y - mouse_y) * (origin_y - mouse_y) 
-                   <= (get_width() / 2) * (get_width() / 2) ;
-            break;
-        case VertexShape::RECTANGLE:
-            return Widget::is_mouse_over(engine);
-        case VertexShape::DIAMOND:
-            break;
-    }
-    return false;
-}
-
+// Draw/Update
 void Vertex::draw(ModifiedPGE& engine) const {
     int label_x = get_x() + get_width() / 2 - (get_label().size() / 2) * 8;
     int label_y = get_y() + get_width() / 2 - 4;
@@ -155,6 +141,27 @@ void Vertex::update_ui(ModifiedPGE& engine) {
     }
 }
 
+// State
+bool Vertex::is_mouse_over(ModifiedPGE& engine) const {
+    int mouse_x = engine.GetMouseX();
+    int mouse_y = engine.GetMouseY();
+    int origin_x = get_x() + get_width() / 2;
+    int origin_y = get_y() + get_height() / 2;
+    switch(m_shape){
+        case VertexShape::CIRCLE:
+            return (origin_x - mouse_x) * (origin_x - mouse_x) +
+                   (origin_y - mouse_y) * (origin_y - mouse_y) 
+                   <= (get_width() / 2) * (get_width() / 2) ;
+            break;
+        case VertexShape::RECTANGLE:
+            return Widget::is_mouse_over(engine);
+        case VertexShape::DIAMOND:
+            break;
+    }
+    return false;
+}
+
+// ImGui
 void Vertex::main_menu(ModifiedPGE& engine) {
     ImGui::SetNextWindowPos({get_mouse_pos().first,
                              get_mouse_pos().second});

@@ -73,8 +73,10 @@ class Edge : public Widget {
         void draw_debug_arrow(ModifiedPGE& engine) const;
         void draw_debug_arrow_triangle(ModifiedPGE& engine) const;
 
-    private:
+        // Misc
         std::pair<int,int> get_intersection_coord() const;
+
+    private:
         std::unique_ptr<Vertex> m_src;
         std::unique_ptr<Vertex> m_dst;
         std::pair<int,int> m_old_src_coord;

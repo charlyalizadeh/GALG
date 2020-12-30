@@ -15,7 +15,7 @@ enum class VertexShape {
 
 class Vertex : public Widget {
     public:
-        // Constructors
+        // Constructor
         Vertex(const std::pair<int,int>& coord,
                const int& size,
                const std::string& m_label = "",
@@ -37,15 +37,15 @@ class Vertex : public Widget {
         void set_shape(const VertexShape& shape);
         void set_label(const std::string& label);
 
-        // Draw/Update functions
+        // Draw/Update
         void draw(ModifiedPGE& engine) const;
         void update(ModifiedPGE& engine);
         void update_ui(ModifiedPGE& engine);
 
-        // State function
+        // State
         bool is_mouse_over(ModifiedPGE& engine) const;
 
-        // GUI functions
+        // ImGui
         void main_menu(ModifiedPGE& engine);
         void modify_label(ModifiedPGE& engine);
         void modify_shape(ModifiedPGE& engine);

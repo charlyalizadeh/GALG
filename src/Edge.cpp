@@ -137,6 +137,12 @@ void Edge::draw_arrow_circle(ModifiedPGE& engine) const {
                       get_arrow_dim().first,
                       get_color("arrow_fg"));
 }
+void Edge::draw_arrow_square(ModifiedPGE& engine) const {
+    // TODO
+}
+void Edge::draw_arrow_diamond(ModifiedPGE& engine) const {
+    // TODO
+}
 // TODO: better name, or maybe not I don't know
 void Edge::draw_arrow_triangle(ModifiedPGE& engine) const {
     
@@ -180,7 +186,6 @@ void Edge::draw_arrow_triangle(ModifiedPGE& engine) const {
         }
     }
 }
-
 void Edge::update(ModifiedPGE& engine) {
     set_coord(get_src().get_center());
     set_width(abs(get_src().get_center_x() - get_dst().get_center_x()));
@@ -227,7 +232,90 @@ bool Edge::is_mouse_over(ModifiedPGE& engine) const {
     }
 }
 
+// Debug
+void Edge::draw_debug(ModifiedPGE& engine) const {
+    if(is_mouse_over(engine)) {
+        draw_is_mouse_over(engine);
+    }
+    draw_debug_arrow(engine);
+}
+void Edge::draw_is_mouse_over(ModifiedPGE& engine) const {
+    for(int x0 = 0; x0 < engine.ScreenWidth(); x0++) {
+        for(int y0 = 0; y0 < engine.ScreenHeight(); y0++) {
+            int x1 = get_src().get_center_x();
+            int y1 = get_src().get_center_y();
+            int x2 = get_dst().get_center_x();
+            int y2 = get_dst().get_center_y();
 
+            // Check the normal distance to the line
+            float distance = abs((x2 - x1) * (y1 - y0) -
+                                 (x1 - x0) * (y2 - y1)) /
+                            (float)sqrt((x2 - x1) * (x2 - x1) +
+                                        (y2 - y1) * (y2 - y1));
+            if(distance > 8){
+                continue;
+            }
+
+            int dxl = x2 - x1;
+            int dyl = y2 - y1;
+
+            bool is_over = false;
+            if (abs(dxl) >= abs(dyl)) {
+              is_over = dxl > 0 ?  x1 <= x0 && x0 <= x2 : x2 <= x0 && x0 <= x1;
+              
+            }
+            else {
+              is_over = dyl > 0 ?  y1 <= y0 && y0 <= y2 : y2 <= y0 && y0 <= y1;
+            }
+            if(is_over) {
+                engine.Draw(x0, y0, COLOR[6]);
+            }
+        }
+    }
+}
+void Edge::draw_debug_arrow(ModifiedPGE& engine) const {
+    std::pair<int,int> intersection = get_intersection_coord();
+    engine.DrawCircle(intersection.first, intersection.second, 2, olc::BLUE);
+    switch(get_arrow_shape()) {
+        case ArrowShape::TRIANGLE:
+            draw_debug_arrow_triangle(engine);
+            break;
+    }
+}
+void Edge::draw_debug_arrow_triangle(ModifiedPGE& engine) const {
+    int base_distance = get_arrow_dim().first;
+    int arrow_distance = get_arrow_dim().second;
+    std::pair<int,int> intersection = get_intersection_coord();
+    int vec_edge_x =  get_src().get_center_x() - intersection.first;
+    int vec_edge_y =  get_src().get_center_y() - intersection.second;
+    int x_base, y_base;
+    float vec_perp_x, vec_perp_y;
+    if(vec_edge_x != 0) {
+        float coefficient = -sqrt((base_distance * base_distance) /
+                            (float)(vec_edge_x * vec_edge_x +
+                                    vec_edge_y * vec_edge_y));
+        x_base = intersection.first - coefficient * vec_edge_x;
+        y_base = intersection.second - coefficient * vec_edge_y;
+        vec_perp_y = sqrt((arrow_distance * arrow_distance) /
+                     (float)((vec_edge_y * vec_edge_y) / 
+                     (float)(vec_edge_x * vec_edge_x) + 1));
+        vec_perp_x = -(vec_edge_y / (float)vec_edge_x) * vec_perp_y;
+    }
+    else {
+        if(vec_edge_y != 0) {
+            x_base = intersection.first;
+            y_base = intersection.second + (vec_edge_y/abs(vec_edge_y)) *
+                     base_distance;
+            vec_perp_x = arrow_distance;
+            vec_perp_y = 0;
+        }
+    }
+    engine.DrawCircle(x_base, y_base, 2, olc::BLUE);
+    engine.DrawCircle(x_base + vec_perp_x, y_base + vec_perp_y, 2, olc::BLUE);
+    engine.DrawCircle(x_base - vec_perp_x, y_base - vec_perp_y, 2, olc::BLUE);
+}
+
+// Misc
 std::pair<int,int> Edge::get_intersection_coord() const {
     std::pair<int,int> dst_center = get_dst().get_center();
     std::pair<int,int> src_center = get_src().get_center();
@@ -290,89 +378,4 @@ std::pair<int,int> Edge::get_intersection_coord() const {
             break;
     }
     return intersection_coord;
-}
-
-// Debug
-void Edge::draw_debug(ModifiedPGE& engine) const {
-    if(is_mouse_over(engine)) {
-        draw_is_mouse_over(engine);
-    }
-    draw_debug_arrow(engine);
-}
-
-void Edge::draw_is_mouse_over(ModifiedPGE& engine) const {
-    for(int x0 = 0; x0 < engine.ScreenWidth(); x0++) {
-        for(int y0 = 0; y0 < engine.ScreenHeight(); y0++) {
-            int x1 = get_src().get_center_x();
-            int y1 = get_src().get_center_y();
-            int x2 = get_dst().get_center_x();
-            int y2 = get_dst().get_center_y();
-
-            // Check the normal distance to the line
-            float distance = abs((x2 - x1) * (y1 - y0) -
-                                 (x1 - x0) * (y2 - y1)) /
-                            (float)sqrt((x2 - x1) * (x2 - x1) +
-                                        (y2 - y1) * (y2 - y1));
-            if(distance > 8){
-                continue;
-            }
-
-            int dxl = x2 - x1;
-            int dyl = y2 - y1;
-
-            bool is_over = false;
-            if (abs(dxl) >= abs(dyl)) {
-              is_over = dxl > 0 ?  x1 <= x0 && x0 <= x2 : x2 <= x0 && x0 <= x1;
-              
-            }
-            else {
-              is_over = dyl > 0 ?  y1 <= y0 && y0 <= y2 : y2 <= y0 && y0 <= y1;
-            }
-            if(is_over) {
-                engine.Draw(x0, y0, COLOR[6]);
-            }
-        }
-    }
-}
-void Edge::draw_debug_arrow(ModifiedPGE& engine) const {
-    std::pair<int,int> intersection = get_intersection_coord();
-    engine.DrawCircle(intersection.first, intersection.second, 2, olc::BLUE);
-    switch(get_arrow_shape()) {
-        case ArrowShape::TRIANGLE:
-            draw_debug_arrow_triangle(engine);
-            break;
-    }
-}
-
-void Edge::draw_debug_arrow_triangle(ModifiedPGE& engine) const {
-    int base_distance = get_arrow_dim().first;
-    int arrow_distance = get_arrow_dim().second;
-    std::pair<int,int> intersection = get_intersection_coord();
-    int vec_edge_x =  get_src().get_center_x() - intersection.first;
-    int vec_edge_y =  get_src().get_center_y() - intersection.second;
-    int x_base, y_base;
-    float vec_perp_x, vec_perp_y;
-    if(vec_edge_x != 0) {
-        float coefficient = -sqrt((base_distance * base_distance) /
-                            (float)(vec_edge_x * vec_edge_x +
-                                    vec_edge_y * vec_edge_y));
-        x_base = intersection.first - coefficient * vec_edge_x;
-        y_base = intersection.second - coefficient * vec_edge_y;
-        vec_perp_y = sqrt((arrow_distance * arrow_distance) /
-                     (float)((vec_edge_y * vec_edge_y) / 
-                     (float)(vec_edge_x * vec_edge_x) + 1));
-        vec_perp_x = -(vec_edge_y / (float)vec_edge_x) * vec_perp_y;
-    }
-    else {
-        if(vec_edge_y != 0) {
-            x_base = intersection.first;
-            y_base = intersection.second + (vec_edge_y/abs(vec_edge_y)) *
-                     base_distance;
-            vec_perp_x = arrow_distance;
-            vec_perp_y = 0;
-        }
-    }
-    engine.DrawCircle(x_base, y_base, 2, olc::BLUE);
-    engine.DrawCircle(x_base + vec_perp_x, y_base + vec_perp_y, 2, olc::BLUE);
-    engine.DrawCircle(x_base - vec_perp_x, y_base - vec_perp_y, 2, olc::BLUE);
 }

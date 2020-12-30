@@ -1,5 +1,6 @@
 #include "../inc/Widget.h"
 
+/*public*/
 // Constructor
 Widget::Widget(const std::pair<int,int>& coord,
                const std::pair<int,int>& dim,
@@ -72,13 +73,13 @@ const std::pair<float,float>& Widget::get_mouse_pos() const {
 const boost::uuids::uuid& Widget::get_id() const {
     return m_id; 
 }
-const std::pair<int,int> Widget::get_center() const { 
+std::pair<int,int> Widget::get_center() const { 
     return {get_x() + get_width() / 2, get_y() + get_height() / 2}; 
 }
-const int Widget::get_center_x() const {
+int Widget::get_center_x() const {
     return get_x() + get_width() / 2;
 }
-const int Widget::get_center_y() const {
+int Widget::get_center_y() const {
     return get_y() + get_height() / 2;
 }
 
@@ -149,6 +150,12 @@ void Widget::add_color(const std::string& label, const olc::Pixel& color) {
 }
 void Widget::add_color(const std::string& label, const std::string& hexcol) {
     m_colors[label] = olc::Pixel(hexcol);
+}
+void Widget::add_color(const std::string& label,
+                       const int& red,
+                       const int& green,
+                       const int& blue) {
+    m_colors[label] = olc::Pixel(red, green, blue);
 }
 
 // State

@@ -54,6 +54,7 @@ bool ModifiedPGE::get_flag(const std::string& flag) const {
     return m_flag.at(flag); 
 }
 
+// Setter
 void ModifiedPGE::set_flag(const std::string& flag, bool state) {
     m_flag[flag] = state; 
 }
@@ -73,7 +74,7 @@ void ModifiedPGE::push_back_order_id(const boost::uuids::uuid& id) {
     m_order.insert(m_order.begin(), id); 
 }
 
-// Setter
+// Update/Draw order related
 void ModifiedPGE::move_forward(const boost::uuids::uuid& id) {
     auto itr = std::find(m_order.begin(), m_order.end(), id);
     int index = std::distance(m_order.begin(), itr);

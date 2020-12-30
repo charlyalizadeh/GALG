@@ -26,11 +26,8 @@ class Engine : public ModifiedPGE {
         int get_nb_edge() const;
         const bool& get_state(const std::string& state_name) const;
         const std::vector<boost::uuids::uuid>& get_edge_buffer() const;
-        const std::string& get_type(const boost::uuids::uuid& id) const;
         const bool has_edge(const boost::uuids::uuid& vertex_id1,
                              const boost::uuids::uuid& vertex_id2);
-        const std::vector<boost::uuids::uuid>& get_vertices_ids() const;
-        const std::vector<boost::uuids::uuid>& get_edges_ids() const;
 
         // Setter
         void set_default_vertex(Vertex default_vertex);
@@ -38,12 +35,10 @@ class Engine : public ModifiedPGE {
         // Debug
         void draw_debug();
 
-
     private:
         // ImGui
         void draw_ui() override;
         void draw_action_window();
-        void draw_debug_window();
 
         // Getter
         Vertex* get_vertex_ptr(const boost::uuids::uuid& id);

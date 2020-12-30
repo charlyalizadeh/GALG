@@ -48,9 +48,9 @@ class Widget{
         const bool& get_gui_state(const std::string& gui) const;
         const std::pair<float,float>& get_mouse_pos() const;
         const boost::uuids::uuid& get_id() const;
-        const std::pair<int,int> get_center() const;
-        const int get_center_x() const;
-        const int get_center_y() const;
+        std::pair<int,int> get_center() const;
+        int get_center_x() const;
+        int get_center_y() const;
 
         // Setter
         void set_x(const int& x);
@@ -115,7 +115,6 @@ class Widget{
         boost::uuids::uuid m_id;
         std::map<std::string,olc::Pixel> m_colors;
         std::map<std::string,bool> m_gui_state;
-
 };
 #endif // GALG_WIDGET_H_
 
