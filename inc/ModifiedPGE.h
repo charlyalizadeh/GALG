@@ -24,21 +24,28 @@ class ModifiedPGE : public olc::PixelGameEngine
         const olc::Pixel& get_bg_color() const;
         bool get_is_dragging() const;
         olc::imgui::PGE_ImGUI& get_pge_imgui();
-        const std::vector<boost::uuids::uuid>& get_order() const;
+        const std::vector<boost::uuids::uuid>& get_order(const std::string& layer="main") const;
         bool get_flag(const std::string& flag) const;
 
         // Setter
         void set_flag(const std::string& flag, bool state);
         void set_bg_color(const olc::Pixel& color);
         void set_is_dragging(bool is_dragging); 
-        void push_front_order_id(const boost::uuids::uuid& id);
-        void push_back_order_id(const boost::uuids::uuid& id);
+        void push_front_order_id(const boost::uuids::uuid& id,
+                                 const std::string& layer="main");
+        void push_back_order_id(const boost::uuids::uuid& id,
+                                const std::string& layer="main");
+        void create_layer(const std::string& layer);
 
         // Update/Draw order related
-        void move_forward(const boost::uuids::uuid& id);
-        void move_backward(const boost::uuids::uuid& id);
-        void move_front(const boost::uuids::uuid& id);
-        void move_back(const boost::uuids::uuid& id);
+        void move_forward(const boost::uuids::uuid& id,
+                          const std::string& layer="main");
+        void move_backward(const boost::uuids::uuid& id,
+                           const std::string& layer="main");
+        void move_front(const boost::uuids::uuid& id,
+                        const std::string& layer="main");
+        void move_back(const boost::uuids::uuid& id,
+                       const std::string& layer="main");
 
     protected:
         // ImGui
@@ -50,7 +57,7 @@ class ModifiedPGE : public olc::PixelGameEngine
         olc::Pixel m_bg_color;
         std::pair<float,float> m_pos_temp;
         std::map<std::string,bool> m_flag;
-        std::vector<boost::uuids::uuid> m_order;
+        std::map<std::string,std::vector<boost::uuids::uuid>> m_layers;
 };
 
 
