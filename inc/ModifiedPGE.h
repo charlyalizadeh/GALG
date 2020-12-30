@@ -22,10 +22,11 @@ class ModifiedPGE : public olc::PixelGameEngine
 
         // Getter
         const olc::Pixel& get_bg_color() const;
-        bool get_is_dragging() const;
+        const bool& get_is_dragging() const;
         olc::imgui::PGE_ImGUI& get_pge_imgui();
         const std::vector<boost::uuids::uuid>& get_order(const std::string& layer="main") const;
-        bool get_flag(const std::string& flag) const;
+        const bool& get_flag(const std::string& flag) const;
+        
 
         // Setter
         void set_flag(const std::string& flag, bool state);

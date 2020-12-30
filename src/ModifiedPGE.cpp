@@ -42,7 +42,7 @@ void ModifiedPGE::DrawUI(void) {
 const olc::Pixel& ModifiedPGE::get_bg_color() const {
     return m_bg_color; 
 }
-bool ModifiedPGE::get_is_dragging() const {
+const bool& ModifiedPGE::get_is_dragging() const {
     return m_flag.at("is_dragging"); 
 }
 olc::imgui::PGE_ImGUI& ModifiedPGE::get_pge_imgui() {
@@ -51,7 +51,7 @@ olc::imgui::PGE_ImGUI& ModifiedPGE::get_pge_imgui() {
 const std::vector<boost::uuids::uuid>& ModifiedPGE::get_order(const std::string& layer) const {
     return m_layers.at(layer);
 }
-bool ModifiedPGE::get_flag(const std::string& flag) const {
+const bool& ModifiedPGE::get_flag(const std::string& flag) const {
     return m_flag.at(flag); 
 }
 
