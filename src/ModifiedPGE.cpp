@@ -86,7 +86,7 @@ void ModifiedPGE::move_forward(const boost::uuids::uuid& id,
     try {
         auto itr = std::find(m_layers[layer].begin(), m_layers[layer].end(), id);
         int index = std::distance(m_layers[layer].begin(), itr);
-        if(!index + 1 < m_layers[layer].size()){
+        if(index + 1 < m_layers[layer].size()){
             std::swap(m_layers[layer][index], m_layers[layer][index + 1]);
         }
     }
