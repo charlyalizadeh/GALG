@@ -7,6 +7,7 @@
 #include "../lib/imgui/imgui_impl_opengl2.h"
 #include <string>
 
+namespace galg {
 enum class VertexShape {
     CIRCLE,
     RECTANGLE,
@@ -50,9 +51,16 @@ class Vertex : public Widget {
         void modify_label(ModifiedPGE& engine);
         void modify_shape(ModifiedPGE& engine);
 
+        // Update/Draw order related
+        void move_forward(ModifiedPGE& engine) const;
+        void move_backward(ModifiedPGE& engine) const;
+        void move_front(ModifiedPGE& engine) const;
+        void move_back(ModifiedPGE& engine) const;
+
     private:
         std::string m_label;
         VertexShape m_shape;
 };
+}
 
 #endif // GALG_VERTEX_H_

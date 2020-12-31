@@ -12,8 +12,8 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <math.h>
 
+namespace galg {
 #define PI 3.14159265359
-
 
 enum class ArrowShape {
     CIRCLE,
@@ -73,6 +73,12 @@ class Edge : public Widget {
         void draw_debug_arrow(ModifiedPGE& engine) const;
         void draw_debug_arrow_triangle(ModifiedPGE& engine) const;
 
+        // Update/Draw order related
+        void move_forward(ModifiedPGE& engine) const;
+        void move_backward(ModifiedPGE& engine) const;
+        void move_front(ModifiedPGE& engine) const;
+        void move_back(ModifiedPGE& engine) const;
+
         // Misc
         std::pair<int,int> get_intersection_coord() const;
 
@@ -87,5 +93,5 @@ class Edge : public Widget {
         int m_arrow_offset;
         bool m_debug;
 };
-
+}
 #endif // GALG_EDGE_H_

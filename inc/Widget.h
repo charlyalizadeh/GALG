@@ -11,6 +11,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
+namespace galg {
 // Inspired by Windows 95 palette
 const std::vector<olc::Pixel> COLOR = {
     olc::Pixel("#000000"),
@@ -27,7 +28,6 @@ const std::vector<olc::Pixel> COLOR = {
 
 class Widget{
     public:
-
         // Constructor
         Widget(const std::pair<int,int>& coord,
                const std::pair<int,int>& dim,
@@ -102,10 +102,10 @@ class Widget{
         void modify_depth(ModifiedPGE& engine);
 
         // Update/Draw order related
-        void move_forward(ModifiedPGE& engine) const;
-        void move_backward(ModifiedPGE& engine) const;
-        void move_front(ModifiedPGE& engine) const;
-        void move_back(ModifiedPGE& engine) const;
+        virtual void move_forward(ModifiedPGE& engine) const;
+        virtual void move_backward(ModifiedPGE& engine) const;
+        virtual void move_front(ModifiedPGE& engine) const;
+        virtual void move_back(ModifiedPGE& engine) const;
 
     private:
         std::pair<int,int> m_coord, m_dim;
@@ -116,5 +116,6 @@ class Widget{
         std::map<std::string,olc::Pixel> m_colors;
         std::map<std::string,bool> m_gui_state;
 };
+}
 #endif // GALG_WIDGET_H_
 

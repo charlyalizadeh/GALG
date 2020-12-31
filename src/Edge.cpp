@@ -1,5 +1,6 @@
 #include "../inc/Edge.h"
 
+namespace galg {
 /*public*/
 // Constructor
 Edge::Edge(Vertex* src,
@@ -315,6 +316,20 @@ void Edge::draw_debug_arrow_triangle(ModifiedPGE& engine) const {
     engine.DrawCircle(x_base - vec_perp_x, y_base - vec_perp_y, 2, olc::BLUE);
 }
 
+// Update/Draw order related
+void Edge::move_forward(ModifiedPGE& engine) const {
+    engine.move_forward(get_id(), "edge");
+}
+void Edge::move_backward(ModifiedPGE& engine) const {
+    engine.move_backward(get_id(), "edge");
+}
+void Edge::move_front(ModifiedPGE& engine) const {
+    engine.move_front(get_id(), "edge");
+}
+void Edge::move_back(ModifiedPGE& engine) const {
+    engine.move_back(get_id(), "edge");
+}
+
 // Misc
 std::pair<int,int> Edge::get_intersection_coord() const {
     std::pair<int,int> dst_center = get_dst().get_center();
@@ -378,4 +393,5 @@ std::pair<int,int> Edge::get_intersection_coord() const {
             break;
     }
     return intersection_coord;
+}
 }

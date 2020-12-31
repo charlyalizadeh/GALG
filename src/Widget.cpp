@@ -1,5 +1,6 @@
 #include "../inc/Widget.h"
 
+namespace galg {
 /*public*/
 // Constructor
 Widget::Widget(const std::pair<int,int>& coord,
@@ -217,14 +218,15 @@ void Widget::modify_depth(ModifiedPGE& engine) {
 
 // Update/Draw order related
 void Widget::move_forward(ModifiedPGE& engine) const {
-    engine.move_forward(get_id());
+    engine.move_forward(get_id(), "widget");
 }
 void Widget::move_backward(ModifiedPGE& engine) const {
-    engine.move_backward(get_id());
+    engine.move_backward(get_id(), "widget");
 }
 void Widget::move_front(ModifiedPGE& engine) const {
-    engine.move_front(get_id());
+    engine.move_front(get_id(), "widget");
 }
 void Widget::move_back(ModifiedPGE& engine) const {
-    engine.move_back(get_id());
+    engine.move_back(get_id(), "widget");
+}
 }

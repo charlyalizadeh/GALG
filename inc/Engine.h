@@ -7,6 +7,7 @@
 #include "../lib/olcPixelGameEngine.h"
 #include <boost/uuid/uuid_io.hpp>
 
+namespace galg {
 class Engine : public ModifiedPGE {
     public:
         // Constructor
@@ -74,6 +75,7 @@ class Engine : public ModifiedPGE {
         std::vector<boost::uuids::uuid> m_edge_buffer;
         Vertex m_default_vertex;
 };
+}
 
 
 #endif // GALG_ENGINE_H_

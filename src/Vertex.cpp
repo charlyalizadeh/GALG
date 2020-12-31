@@ -1,5 +1,6 @@
 #include "../inc/Vertex.h"
 
+namespace galg {
 /*private*/
 // Constructor
 Vertex::Vertex(const std::pair<int,int>& coord,
@@ -215,4 +216,19 @@ void Vertex::modify_shape(ModifiedPGE& engine) {
     }
     set_shape(static_cast<VertexShape>(item_current));
     ImGui::End();
+}
+
+// Update/Draw order related
+void Vertex::move_forward(ModifiedPGE& engine) const {
+    engine.move_forward(get_id(), "vertex");
+}
+void Vertex::move_backward(ModifiedPGE& engine) const {
+    engine.move_backward(get_id(), "vertex");
+}
+void Vertex::move_front(ModifiedPGE& engine) const {
+    engine.move_front(get_id(), "vertex");
+}
+void Vertex::move_back(ModifiedPGE& engine) const {
+    engine.move_back(get_id(), "vertex");
+}
 }

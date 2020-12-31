@@ -1,5 +1,6 @@
 #include "../inc/Engine.h"
 
+namespace galg {
 /*public*/ 
 // Constructor
 Engine::Engine() {
@@ -21,6 +22,8 @@ bool Engine::OnUserCreate() {
     set_flag("has_active_popup_menu", false);
     set_state("debug", true);
     m_default_vertex = Vertex({ScreenWidth() / 2, ScreenHeight() / 2}, 50);
+    create_layer("edge");
+    create_layer("vertex");
     return true;
 }
 bool Engine::OnUserUpdate(float fElapsedTime) {
@@ -38,8 +41,9 @@ bool Engine::OnUserUpdate(float fElapsedTime) {
     return true;
 }
 bool Engine::OnUserDestroy() {
-    for(const auto& id : get_order()) {
-        delete m_widgets[id];
+    for(auto& widget : m_widgets) {
+        delete widget.second;
+        widget.second = nullptr;
     }
     return true;
 }
@@ -115,8 +119,10 @@ void Engine::draw_ui() {
     draw_action_window();
 
     // Widget ui
-    for(const auto& id : get_order()) {
-        get_widget_ptr(id)->update_ui(*this);
+    for(auto layer = get_layer_order(OrderType::UPDATE).rbegin(); layer != get_layer_order(OrderType::UPDATE).rend(); ++layer) {
+        for (auto id = get_order(*layer, OrderType::UPDATE).rbegin(); id != get_order(*layer, OrderType::UPDATE).rend(); ++id) { 
+            get_widget_ptr(*id)->update_ui(*this);
+        } 
     }
 }
 void Engine::draw_action_window() {
@@ -169,7 +175,7 @@ void Engine::add_edge(const boost::uuids::uuid& vertex_id1,
         new_edge->set_is_directed(true);
         m_edges[id] = new_edge;
         add_widget(id, new_edge);
-        push_back_order_id(id);
+        push_front(id, "edge");
     }
 }
 void Engine::add_vertex(const Vertex& vertex) {
@@ -178,7 +184,7 @@ void Engine::add_vertex(const Vertex& vertex) {
     new_vertex->set_id(id);
     m_vertices[id] = new_vertex;
     add_widget(id, new_vertex);
-    push_front_order_id(id);
+    push_front(id, "vertex");
 }
 void Engine::add_widget(const boost::uuids::uuid& id, Widget* widget) {
     m_widgets[id] = widget;
@@ -199,11 +205,15 @@ void Engine::clear_edge_buffer() {
 
 // Update
 void Engine::update_normal() {
-    for (auto id = get_order().rbegin(); id != get_order().rend(); ++id) { 
-        get_widget_ptr(*id)->update(*this);
-    } 
-    for(const auto& id : get_order()) {
-        get_widget_ptr(id)->draw(*this);
+    for(auto layer = get_layer_order(OrderType::UPDATE).rbegin(); layer != get_layer_order(OrderType::UPDATE).rend(); ++layer) {
+        for (auto id = get_order(*layer, OrderType::UPDATE).rbegin(); id != get_order(*layer, OrderType::UPDATE).rend(); ++id) { 
+            get_widget_ptr(*id)->update(*this);
+        } 
+    }
+    for(auto layer: get_layer_order(OrderType::DRAW)) {
+        for(auto id : get_order(layer, OrderType::DRAW)) {
+            get_widget_ptr(id)->draw(*this);
+        }
     }
 }
 void Engine::update_add_edge() {
@@ -220,4 +230,5 @@ void Engine::update_add_edge() {
         set_state("add_edge", false);
         set_state("normal", true);
     }
+}
 }
