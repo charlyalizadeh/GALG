@@ -66,7 +66,7 @@ void Vertex::set_label(const std::string& label) {
 
 // Draw/Update
 void Vertex::draw(ModifiedPGE& engine) const {
-    int label_x = get_x() + get_width() / 2 - (get_label().size() / 2) * 8;
+    int label_x = get_x() + get_width() / 2 - (get_label().size() / 2) * 8 - (get_label().size() % 2) * 4;
     int label_y = get_y() + get_width() / 2 - 4;
     std::string state = get_is_drag() ?  "_drag" :
                                          is_mouse_over(engine) ?  "_over" : "";

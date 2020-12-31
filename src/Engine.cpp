@@ -205,10 +205,10 @@ void Engine::clear_edge_buffer() {
 
 // Update
 void Engine::update_normal() {
-    for(auto layer = get_layer_order(OrderType::UPDATE).rbegin(); layer != get_layer_order(OrderType::UPDATE).rend(); ++layer) {
-        for (auto id = get_order(*layer, OrderType::UPDATE).rbegin(); id != get_order(*layer, OrderType::UPDATE).rend(); ++id) { 
-            get_widget_ptr(*id)->update(*this);
-        } 
+    for(auto layer: get_layer_order(OrderType::UPDATE)) {
+        for(auto id : get_order(layer, OrderType::UPDATE)) {
+            get_widget_ptr(id)->update(*this);
+        }
     }
     for(auto layer: get_layer_order(OrderType::DRAW)) {
         for(auto id : get_order(layer, OrderType::DRAW)) {
@@ -218,9 +218,9 @@ void Engine::update_normal() {
 }
 void Engine::update_add_edge() {
     // TODO: Take into account the draw order
-    for(const auto& el : get_vertices()) {
-        if(el.second->is_clicked(*this)) {
-            add_widget_to_edge_buffer(el.second->get_id());
+    for (auto id = get_order("vertex", OrderType::DRAW).rbegin(); id != get_order("vertex", OrderType::DRAW).rend(); ++id) { 
+        if(get_vertex_ptr(*id)->is_clicked(*this)) {
+            add_widget_to_edge_buffer(get_vertex_ptr(*id)->get_id());
             break;
         }
     }
