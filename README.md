@@ -1,7 +1,8 @@
+**EARLY DEVELOPMENT !!**  
+
 # GALG
 
 Personal project on graph theory algorithms vizualization.  
-**EARLY DEVELOPMENT !!**  
 I may push some code that won't compile (usually it will but since it's a personal project I'm not always as rigid as
 I should be).
 
