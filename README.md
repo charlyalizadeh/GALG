@@ -4,7 +4,7 @@
 
 Personal project on graph theory algorithms vizualization.  
 I may push some code that won't compile (usually it will but since it's a personal project I'm not always as rigid as
-I should be).
+I should be).  
 I'm not working on this project anymore, it's fun but I feel like it doesn't learn me anything anymore and there are a lot of thing I want to learn. I may come back to it later (or not, I don't know). It was a good introduction to Makefile and ImGui.
 
 ## Requirements
